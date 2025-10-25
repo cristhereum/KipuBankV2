@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"KipuBank.sol": "KipuBank"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"KipuBank.sol": {
+			"keccak256": "0xb1031ab29393551581e4d25d1bbb571db6d3579916ee38bd23aadf3b9de1da2f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9fa90aed0d45fd808a73ee9dfea791ad50eb42866c7a8716176c3e4a513edef6",
+				"dweb:/ipfs/QmQadVRDvifvk5cFz2QErpWtxaz3Z8nMQF9mcEW2Me3H7h"
+			]
+		}
+	},
+	"version": 1
+}
