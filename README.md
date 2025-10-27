@@ -1,6 +1,6 @@
 # 🏦 KipuBank
 
-Decentralized bank vault smart contract developed in Solidity that allows users to deposit and withdraw ETH securely.
+Decentralized bank vault smart contract developed in Solidity that allows users to deposit and withdraw ETH and USDC securely.
 
 ## 📋 Contract Description
 
