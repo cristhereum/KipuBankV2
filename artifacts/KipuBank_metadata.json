@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.28+commit.7893614a"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -89,6 +89,44 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "valor",
+						"type": "uint256"
+					}
+				],
+				"name": "DepositedETH",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "valor",
+						"type": "uint256"
+					}
+				],
+				"name": "DepositedUSDC",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "previousOwner",
@@ -102,6 +140,19 @@
 					}
 				],
 				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "receiver",
+						"type": "address"
+					}
+				],
+				"name": "Withdrawed",
 				"type": "event"
 			},
 			{
@@ -270,6 +321,17 @@
 					}
 				]
 			},
+			"events": {
+				"DepositedETH(address,uint256)": {
+					"notice": "evento emitido cuando se realiza un deposito de ETH"
+				},
+				"DepositedUSDC(address,uint256)": {
+					"notice": "evento emitido cuando se realiza un deposito de USDC"
+				},
+				"Withdrawed(address)": {
+					"notice": "evento emitido cuando se realiza un retiro"
+				}
+			},
 			"kind": "user",
 			"methods": {},
 			"notice": "This is educational only.",
@@ -365,11 +427,11 @@
 			]
 		},
 		"scr/KipuBank.sol": {
-			"keccak256": "0x2c4207fd6aae92f9c1301de53484a91d42f016ab3881c561830cfd9c9670da5b",
+			"keccak256": "0x03448e78b44aab67030079296cf404e6bd00b157b7c3b3df0809c17bf1b9ac0b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://71ee50e9f1f28b8942e1b733595faf1a25e4096533aadddf563e21ae7ad18ec0",
-				"dweb:/ipfs/QmWJG9dNqqLSJDzjgZsxjbWsvnQQ5k33YW1fp5dNZptuMQ"
+				"bzz-raw://af9287e8d626a86a23764ced7616865a6e3d86f64f887fa35b256a6d32023519",
+				"dweb:/ipfs/QmUATc3GT9SuhyADhqGoqrXsi1XL2pBbFnVzygE4VsjD2y"
 			]
 		}
 	},

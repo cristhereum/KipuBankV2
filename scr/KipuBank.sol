@@ -39,14 +39,24 @@ contract KipuBank is Ownable{
     // address constant usdc = address(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
     // address private _owner; // Variable para almacenar la dirección del propietario
 
-
+    //@notice estructura de balances
     struct Balances {
       uint256 eth;
       uint256 usdc;
       uint256 total;
     }
-
+    //@notice mapeo de estructuras de balances
     mapping (address => Balances) public balance;
+
+    /*///////////////////////
+    Eventos
+    ////////////////////////*/
+    ///@notice evento emitido cuando se realiza un deposito de ETH
+    event DepositedETH(address sender, uint256 valor);
+    ///@notice evento emitido cuando se realiza un deposito de USDC
+    event DepositedUSDC(address sender, uint256 valor);
+    ///@notice evento emitido cuando se realiza un retiro
+    event Withdrawed(address receiver);
 
 
     /*///////////////////////
@@ -104,18 +114,24 @@ contract KipuBank is Ownable{
 
 
     /*///////////////////////
-        Deposits
+        Deposit ETH
     ///////////////////////*/
+    // * @notice función para depositar ETH
+    // * @dev 
     function depositETH() external payable {
         uint256 _amount = msg.value;
+        address _sender = msg.sender;
+        // Chequeo que no sea una transferencia de cero
         if (_amount == 0) revert ZeroTransfer();
-
-        balance[msg.sender].eth += _amount;
+        
+        // Effects
+        balance[_sender].eth += _amount;
 
         uint256 _usdc = convertEthInUSD(_amount);
-        balance[msg.sender].total += _usdc;
+        balance[_sender].total += _usdc;
 
-        // TODO: emitir evento
+        // Evento
+        emit DepositedETH(_sender, _amount);
     }
 
     /*///////////////////////
@@ -145,7 +161,8 @@ contract KipuBank is Ownable{
         // Transferencia real del token
         IERC20(USDC).safeTransferFrom(_sender, address(this), _amount);
 
-        // TODO: emitir evento
+        // Evento
+        emit DepositedUSDC(_sender, _amount);
     }
 
 
@@ -156,22 +173,23 @@ contract KipuBank is Ownable{
     // * @notice función para retirar los fondos
     // * @dev 
     function withdraw() external {
-        uint256 ethBalance = balance[msg.sender].eth;
-        uint256 usdcBalance = balance[msg.sender].usdc;
+        address _sender = msg.sender;
+        uint256 ethBalance = balance[_sender].eth;
+        uint256 usdcBalance = balance[_sender].usdc;
 
         if (ethBalance > 0) {
-            balance[msg.sender].eth = 0;
+            balance[_sender].eth = 0;
             _transferEth(ethBalance);
-            // TODO: emit DonationsV2_SaqueRealizado(msg.sender, ethBalance);
         }
 
         if (usdcBalance > 0) {
-            balance[msg.sender].usdc = 0;
-            // TODO: emit DonationsV2_SaqueRealizado(msg.sender, usdcBalance);
-            USDC.safeTransfer(msg.sender, usdcBalance);
+            balance[_sender].usdc = 0;
+            USDC.safeTransfer(_sender, usdcBalance);
         }
 
-        balance[msg.sender].total = 0;
+        balance[_sender].total = 0;
+
+        emit Withdrawed(_sender);
     }
 
     // }
