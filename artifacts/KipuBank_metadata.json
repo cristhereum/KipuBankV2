@@ -16,11 +16,6 @@
 						"internalType": "address",
 						"name": "_usdc",
 						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_owner",
-						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -360,11 +355,11 @@
 			]
 		},
 		"scr/KipuBank.sol": {
-			"keccak256": "0x6bb59ebb943e1f549dd663f5e7fe8ca031cd4663066913c583391a993a51e9df",
+			"keccak256": "0x8f0cd37151a2b6409aa69764167b1b84477f8e84db7d803c9feda34527a8cf2d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://db6d307a23252ba5e57c1008d176742ef93b6378660be9b42727ab8258cc37d8",
-				"dweb:/ipfs/QmcHAxLYc6SUawKS6tJaRc5UibcARymcf6zXrsmtf1j8Zi"
+				"bzz-raw://2d9253493d0b6ed5c89682998bcb4095d694a37eb32ca3ac8214de0d634920fb",
+				"dweb:/ipfs/QmXvVDc9QohKd2TVm3kfUuNGMco4vm4sWq3xR2rEoRt2mD"
 			]
 		}
 	},

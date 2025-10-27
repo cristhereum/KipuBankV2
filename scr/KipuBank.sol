@@ -41,6 +41,7 @@ contract KipuBank is Ownable{
     IERC20 public USDC; // USDC
     address constant feed = address(0x694AA1769357215DE4FAC081bf1f309aDC325306);
     address constant usdc = address(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
+    address private _owner; // Variable para almacenar la dirección del propietario
 
 
     struct Balances {
@@ -64,9 +65,11 @@ contract KipuBank is Ownable{
     ///@notice error emitido cuando "You dont have USDC"
     error NotEnoughUSDC();
 
-    constructor(address _feed, address _usdc, address _owner) Ownable(_owner) {
+    constructor(address _feed, address _usdc) Ownable(_owner) {
       USDC = IERC20(_usdc);
       dataFeed = AggregatorV3Interface(_feed);
+      _owner = msg.sender;
+      
     }
 
     // function deposit(uint256 _usdc, address _addr) external payable {
