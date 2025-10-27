@@ -9,10 +9,6 @@ pragma solidity ^0.8.22;
         Imports
 ///////////////////////*/
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-
-/*///////////////////////
-        Libraries
-///////////////////////*/
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /*///////////////////////
@@ -39,9 +35,9 @@ contract KipuBank is Ownable{
     AggregatorV3Interface internal dataFeed;
 
     IERC20 public USDC; // USDC
-    address constant feed = address(0x694AA1769357215DE4FAC081bf1f309aDC325306);
-    address constant usdc = address(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
-    address private _owner; // Variable para almacenar la dirección del propietario
+    // address constant feed = address(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+    // address constant usdc = address(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
+    // address private _owner; // Variable para almacenar la dirección del propietario
 
 
     struct Balances {
@@ -57,20 +53,31 @@ contract KipuBank is Ownable{
     Errors
     ///////////////////////*/
     ///@notice error emitido cuando una transacción falla
-    error TransactionFailed(bytes error);
+    error TransactionFailed(bytes err);
     ///@notice error emitido cuando el retorno del oráculo es incorrecto
     error OracleCompromised();
     ///@notice error emitido cuando se intenta transferir cero
     error ZeroTransfer();
     ///@notice error emitido cuando "You dont have USDC"
     error NotEnoughUSDC();
+    ///@notice error emitido cuando no hay permiso de allow
+    error NotEnoughAllowance();
 
-    constructor(address _feed, address _usdc) Ownable(_owner) {
-      USDC = IERC20(_usdc);
-      dataFeed = AggregatorV3Interface(_feed);
-      _owner = msg.sender;
-      
+    /*///////////////////////
+        Constructor
+    ///////////////////////*/
+    constructor(address _feed, address _usdc) Ownable(msg.sender) {
+        USDC = IERC20(_usdc);
+        dataFeed = AggregatorV3Interface(_feed);
     }
+
+    // constructor(address _feed, address _usdc) Ownable(_owner) {
+    //   USDC = IERC20(_usdc);
+    //   dataFeed = AggregatorV3Interface(_feed);
+    //   _owner = msg.sender;
+      
+    // }
+    
 
     // function deposit(uint256 _usdc, address _addr) external payable {
 
@@ -95,75 +102,85 @@ contract KipuBank is Ownable{
 
     // }
 
+
+    /*///////////////////////
+        Deposits
+    ///////////////////////*/
     function depositETH() external payable {
-      // Bajo a memoria lo que me mandan
-      uint256 _amount = msg.value;
+        uint256 _amount = msg.value;
+        if (_amount == 0) revert ZeroTransfer();
 
-      // Chequeo que sea mayor que cero
-      if (_amount > 0) {
-        balance[msg.sender].eth += msg.value;
-      }
-      else revert ZeroTransfer();
+        balance[msg.sender].eth += _amount;
 
-      // Obtengo el precio del usdc
-      uint256 _usdc = convertEthInUSD(_amount);
+        uint256 _usdc = convertEthInUSD(_amount);
+        balance[msg.sender].total += _usdc;
 
-      balance[msg.sender].total += _usdc;
-
-      // TODO: Emitir
-
+        // TODO: emitir evento
     }
 
+    /*///////////////////////
+        Deposit USDC
+    ///////////////////////*/
+    // * @notice función para depositar USDC
+    // * @dev 
     function depositUSDC(uint256 _amount) external {
-      
-      // Antes que nada veo que tenga el token
-      // Para no usar require(IERC20(USDC).balanceOf(msg.sender) > 0, "You dont have USDC");
+        address _sender = msg.sender;
+        // CHECKS
+        // Chequeo que la transferencia no sea cero
+        if (_amount == 0) revert ZeroTransfer();
+        
+        // Antes que nada veo que tenga el token
+        uint256 _usdcBalance = IERC20(USDC).balanceOf(_sender);
+        if (_usdcBalance < _amount) revert NotEnoughUSDC();
 
-      uint256 _usdcBalance = IERC20(USDC).balanceOf(msg.sender);
-      if (_usdcBalance == 0)
-      revert NotEnoughUSDC();
-      
-      // Después tengo que ver si tengo el allowance
-      // require(IERC20(USDC).allowance(msg.sender, address(this)) > 0, "You need to aprove");
-      uint256 allowance = IERC20(USDC).allowance(msg.sender, address(this));
-      if(allowance < _amount)
-      revert(); //TODO Error
-      // Si no lo tengo lo tengo que aprobar
-      IERC20(USDC).approve(address(this), _amount);
+        // Después tengo que ver si tengo el allowance
+        uint256 allowance = IERC20(USDC).allowance(_sender, address(this));
+        if (allowance < _amount) revert NotEnoughAllowance();
+        // EFFECTS
+        // Actualizo balances
+        balance[_sender].usdc += _amount;
+        balance[_sender].total += _amount;
 
-      // Actualizo el balance
-      balance[msg.sender].usdc+= _amount;
-      balance[msg.sender].total+= _amount;
+        // ITERACTIONS
+        // Transferencia real del token
+        IERC20(USDC).safeTransferFrom(_sender, address(this), _amount);
 
-      // TODO: Emitir el evento
-      
-      // Si lo tengo, lo transfiero
-      IERC20(USDC).transferFrom(msg.sender, address(this), _amount);
-      
-      
+        // TODO: emitir evento
     }
 
 
-    function withdraw() public {
-      // uint256 ethBalance = address(this).balance;
-      uint256 ethBalance = balance[msg.sender].eth;
-      // uint256 usdcBalance = i_usdc.balanceOf(address(this));
-      uint256 usdcBalance = balance[msg.sender].usdc;
 
-      if (ethBalance > 0) {
-        // TODO: emit DonationsV2_SaqueRealizado(msg.sender, ethBalance);
+    /*///////////////////////
+        Withdraw
+    ///////////////////////*/
+    // * @notice función para retirar los fondos
+    // * @dev 
+    function withdraw() external {
+        uint256 ethBalance = balance[msg.sender].eth;
+        uint256 usdcBalance = balance[msg.sender].usdc;
+
+        if (ethBalance > 0) {
+            balance[msg.sender].eth = 0;
             _transferEth(ethBalance);
-      }
-      if (usdcBalance > 0) {
-        // TODO: emit DonationsV2_SaqueRealizado(msg.sender, usdcBalance);
-          USDC.safeTransfer(msg.sender, usdcBalance);
+            // TODO: emit DonationsV2_SaqueRealizado(msg.sender, ethBalance);
         }
 
+        if (usdcBalance > 0) {
+            balance[msg.sender].usdc = 0;
+            // TODO: emit DonationsV2_SaqueRealizado(msg.sender, usdcBalance);
+            USDC.safeTransfer(msg.sender, usdcBalance);
+        }
+
+        balance[msg.sender].total = 0;
     }
+
+    // }
     // function getMyBalance() public {}
     // function _getUSDCPrice() private {}
 
-
+    /*///////////////////////
+        Oracle & Conversion
+    ///////////////////////*/
 
     // * @notice función para consultar el precio en USD del ETH
     // * @return ethUSDPrice_ el precio provisto por el oráculo.
@@ -178,7 +195,7 @@ contract KipuBank is Ownable{
       /*uint80 answeredInRound*/
     ) = dataFeed.latestRoundData();
     
-    if (_ethUSDPrice == 0) revert OracleCompromised();
+    if (_ethUSDPrice <= 0) revert OracleCompromised();
     return _ethUSDPrice;
   }
 
@@ -192,15 +209,17 @@ contract KipuBank is Ownable{
         convertedAmount_ = (_ethAmount * _usdcPrice) / DECIMAL_FACTOR_2; //10**18;
     }
 
+
     /**
      * @notice función privada para realizar la transferencia de ether
      * @param _valor El valor a ser transferido
      * @dev necesita revertir si falla
      */
     function _transferEth(uint256 _valor) private {
-        (bool success, bytes memory error) = msg.sender.call{value: _valor}("");
-        if (!success) revert TransactionFailed(error);
+        (bool success, bytes memory err) = msg.sender.call{value: _valor}("");
+        if (!success) revert TransactionFailed(err);
     }
+
 
 
 }

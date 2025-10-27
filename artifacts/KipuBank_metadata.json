@@ -23,6 +23,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "NotEnoughAllowance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "NotEnoughUSDC",
 				"type": "error"
 			},
@@ -68,7 +73,7 @@
 				"inputs": [
 					{
 						"internalType": "bytes",
-						"name": "error",
+						"name": "err",
 						"type": "bytes"
 					}
 				],
@@ -239,6 +244,11 @@
 		},
 		"userdoc": {
 			"errors": {
+				"NotEnoughAllowance()": [
+					{
+						"notice": "error emitido cuando no hay permiso de allow"
+					}
+				],
 				"NotEnoughUSDC()": [
 					{
 						"notice": "error emitido cuando \"You dont have USDC\""
@@ -355,11 +365,11 @@
 			]
 		},
 		"scr/KipuBank.sol": {
-			"keccak256": "0x8f0cd37151a2b6409aa69764167b1b84477f8e84db7d803c9feda34527a8cf2d",
+			"keccak256": "0x2c4207fd6aae92f9c1301de53484a91d42f016ab3881c561830cfd9c9670da5b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2d9253493d0b6ed5c89682998bcb4095d694a37eb32ca3ac8214de0d634920fb",
-				"dweb:/ipfs/QmXvVDc9QohKd2TVm3kfUuNGMco4vm4sWq3xR2rEoRt2mD"
+				"bzz-raw://71ee50e9f1f28b8942e1b733595faf1a25e4096533aadddf563e21ae7ad18ec0",
+				"dweb:/ipfs/QmWJG9dNqqLSJDzjgZsxjbWsvnQQ5k33YW1fp5dNZptuMQ"
 			]
 		}
 	},
