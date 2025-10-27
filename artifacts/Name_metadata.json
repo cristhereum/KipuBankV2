@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.7.6+commit.7338295f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"scr/IERC20.sol": "Name"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"scr/IERC20.sol": {
+			"keccak256": "0xae3ec60a736a8ec99bdc280ba602b40f0228fd28edafe527f77186ecad59f627",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://25ec4d53c8eef18e23baba992ff08804cb61b0ea68c91b9f456039bb4237bb20",
+				"dweb:/ipfs/QmcnDK2bibqZuPqCYYH9TxtfEr6Qv8MstwLybB6N9SxAYn"
+			]
+		}
+	},
+	"version": 1
+}
